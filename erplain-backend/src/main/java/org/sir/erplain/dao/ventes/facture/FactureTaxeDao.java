@@ -1,0 +1,12 @@
+package org.sir.erplain.dao.ventes.facture;
+import org.sir.erplain.bean.core.ventes.facture.FactureTaxe;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import java.util.List;
+public interface FactureTaxeDao extends JpaRepository<FactureTaxe, Long> {
+int deleteByIdIn(List<Long> ids);
+int deleteByFactureId(Long id);
+List<FactureTaxe> findByFactureId(Long id);
+int deleteByTaxeId(Long id);
+List<FactureTaxe> findByTaxeId(Long id);
+}

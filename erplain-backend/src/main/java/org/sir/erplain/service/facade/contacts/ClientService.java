@@ -1,0 +1,35 @@
+package org.sir.erplain.service.facade.contacts;
+import org.sir.erplain.bean.core.contacts.Client;
+import org.sir.erplain.bean.core.parametres.Entreprise;
+import org.sir.erplain.bean.core.parametres.NiveauPrix;
+import org.sir.erplain.bean.core.contacts.ClientTaxe;
+import org.sir.erplain.bean.core.parametres.Devis;
+import org.sir.erplain.bean.core.ventes.remboursement.Remboursement;
+import org.sir.erplain.bean.core.address.Address;
+import org.sir.erplain.bean.core.ventes.retourproduit.RetourProduit;
+import org.sir.erplain.bean.core.ventes.estimation.Estimation;
+import org.sir.erplain.bean.core.ventes.commande.Commande;
+import org.sir.erplain.bean.core.ventes.facture.Facture;
+import org.sir.erplain.bean.core.ventes.notecredit.NoteCredit;
+import java.util.List;
+public interface ClientService {
+Client findById(Long id);
+List<Client> findAllOptimized();
+List<Client> findAll();
+Client create(Client item);
+List<Client> create(List<Client> item);
+Client update(Client item);
+List<Client> update(List<Client> item);
+void deleteById(Long id);
+void delete(Client item);
+void delete(List<Client> items);
+void deleteByIdIn(List<Long> ids);
+int deleteByAddressId(Long id);
+Client findByAddressId(Long id);
+int deleteByEntrepriseId(Long id);
+List<Client> findByEntrepriseId(Long id);
+int deleteByDevisId(Long id);
+List<Client> findByDevisId(Long id);
+int deleteByNiveauPrixId(Long id);
+List<Client> findByNiveauPrixId(Long id);
+}

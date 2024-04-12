@@ -1,0 +1,515 @@
+config:
+  backend: springboot
+  frontend: angular
+  security: true
+  dataLoader: true
+  structure: technical
+  complexity: simple
+
+properties:
+  loadData: false
+  frontend: http//:localhost:4200
+
+project:
+  name: erplain
+  domain: org
+  groupID: sir
+  usedJava: jakarta
+  port: 8036
+
+db:
+  type: mysql
+  name: erplain
+
+packagesName:
+  entity: bean
+  repository: dao
+  service: service
+  webservice: ws
+  converter: converter
+  dto: dto
+  controller: providers
+
+variables:
+  entity: item
+  repository: dao
+  service: service
+  converter: converter
+  dto: dto
+
+namingTemplate:
+  entity: '{C}'
+  repository: '{C}Dao'
+  service: '{C}Service'
+  serviceImpl: '{C}ServiceImpl'
+  converter: '{C}Converter'
+  dto: '{C}Dto'
+  controller: '{C}Provider'
+
+jpa:
+  generateStrategy: AUTO
+
+roles:
+  - ADMIN
+  - EMPLOYE
+
+# The Project Entities
+packages:
+  - name: contacts
+    packages:
+      - name: user
+        entities:
+          - name: Admin#user[ADMIN]
+            fields:
+              - nom
+              - prenom
+              - languePDF|enum-Langue
+              - entreprise|Entreprise
+              - alertes|list-Alerte
+          - name: Employe#user[ADMIN]
+            authority: get(ADMIN,EMPLOYE) delete(ADMIN) update(ADMIN) create(ADMIN)
+            fields:
+              - nom
+              - prenom
+              - code
+              - telephone
+              - address|Address
+    entities:
+      - name: Fournisseur
+        authority: get(ADMIN,EMPLOYE) delete(ADMIN,EMPLOYE) update(ADMIN,EMPLOYE) create(ADMIN,EMPLOYE)
+        fields:
+          - nom
+          - code
+          - email
+          - siteweb
+          - telephone
+          - address|Address
+          - taxeNumero|int
+          - rabais|float
+          - languePDF|enum-Langue
+          - produits|list-Produit
+          - bonCommandes|list-BonCommande
+          - livraisons|list-Livraison
+      - name: Client
+        authority: get(ADMIN,EMPLOYE) delete(ADMIN,EMPLOYE) update(ADMIN,EMPLOYE) create(ADMIN,EMPLOYE)
+        fields:
+          - nom
+          - code
+          - email
+          - siteweb
+          - telephone
+          - taxeNumero|int
+          - rabais|float
+          - languePDF|enum-Langue
+          - valeurCommandeMinimale|int
+          - address|Address
+          - estimations|list-Estimation
+          - commandes|list-Commande
+          - factures|list-Facture
+          - retourProduits|list-RetourProduit
+          - notesCredit|list-NoteCredit
+          - remboursements|list-Remboursement
+        associations:
+          - name: ClientTaxe
+            with: Taxe
+
+  - name: Produit
+    entities:
+      - name: Produit
+        authority: get(ADMIN,EMPLOYE) delete(ADMIN,EMPLOYE) update(ADMIN,EMPLOYE) create(ADMIN,EMPLOYE)
+        fields:
+          - nom
+          - sku
+          - barcode
+          - coutInitial|double
+          - QuantiteMinimumCommandeClient|int
+          - NiveauStockInitial|int
+          - EmplacementDeBac
+          - PointCommande|int
+          - PrixGros|double
+          - PrixDetailRecommande|double
+          - PrixAchat|double
+          - niveauStock|NiveauStock
+        associations:
+          - name: ProduitTaxe
+            with: Taxe
+
+  - name: Ventes
+    entities:
+      - name: CommandeExpedition
+        authority: get(ADMIN,EMPLOYE) delete(ADMIN,EMPLOYE) update(ADMIN,EMPLOYE) create(ADMIN,EMPLOYE)
+        fields:
+          - code
+          - dateCreation|date
+          - dateExpedition|date
+          - statut|enum-StatutCommandeExpedition
+      - name: Paiement
+        authority: get(ADMIN,EMPLOYE) delete(ADMIN,EMPLOYE) update(ADMIN,EMPLOYE) create(ADMIN,EMPLOYE)
+        fields:
+          - datePaiement|date
+          - montantPaye|double
+          - methodePaiement|MethodePaiement{ManyToOne}
+    packages:
+      - name: estimation
+        entities:
+          - name: Estimation
+            authority: get(ADMIN,EMPLOYE) delete(ADMIN,EMPLOYE) update(ADMIN,EMPLOYE) create(ADMIN,EMPLOYE)
+            fields:
+              - code
+              - dateExperation|date
+              - dateCreation|date
+              - dateExpedition|date
+              - rabais|float
+              - typeRabais|enum-TypeRabais
+              - remiseGlobal|double
+              - totalUnites|int
+              - sousTotal|double
+              - total|double
+              - statut|enum-StatutEstimation
+              - facture|Facture
+            associations:
+              - name: EstimationTaxe
+                with: Taxe
+              - name: EstimationTaxeExpedition
+                with: Taxe
+              - name: EstimationProduit
+                with: Produit
+                fields:
+                  - total|double
+                  - quantite|int
+                  - disque|double
+
+      - name: commande
+        entities:
+          - name: Commande
+            authority: get(ADMIN,EMPLOYE) delete(ADMIN,EMPLOYE) update(ADMIN,EMPLOYE) create(ADMIN,EMPLOYE)
+            fields:
+              - code
+              - dateExperation|date
+              - dateCreation|date
+              - dateExpedition|date
+              - rabais|float
+              - remiseGlobal|double
+              - typeRabais|enum-TypeRabais
+              - totalUnites|int
+              - sousTotal|double
+              - total|double
+              - statut|enum-StatutCommande
+              - facture|Facture
+              - commandeExpedition|list-CommandeExpedition #TODO
+            associations:
+              - name: CommandeTaxe
+                with: Taxe
+              - name: CommandeTaxeExpedition
+                with: Taxe
+              - name: CommandeProduit
+                with: Produit
+                fields:
+                  - total|double
+                  - quantite|int
+                  - disque|double
+
+      - name: facture
+        entities:
+          - name: Facture
+            authority: get(ADMIN,EMPLOYE) delete(ADMIN,EMPLOYE) update(ADMIN,EMPLOYE) create(ADMIN,EMPLOYE)
+            fields:
+              - code
+              - dateExperation|date
+              - dateCreation|date
+              - dateExpedition|date
+              - rabais|float
+              - typeRabais|enum-TypeRabais
+              - totalUnites|int
+              - remiseGlobal|double
+              - sousTotal|double
+              - total|double
+              - statut|enum-StatutFacture
+              - paiement|Paiement
+              - retourProduit|list-RetourProduit
+            associations:
+              - name: FactureTaxe
+                with: Taxe
+              - name: FactureTaxeExpedition
+                with: Taxe
+              - name: FactureProduit
+                with: Produit
+                fields:
+                  - total|double
+                  - quantite|int
+                  - disque|double
+
+      - name: retourproduit
+        entities:
+          - name: RetourProduit
+            authority: get(ADMIN,EMPLOYE) delete(ADMIN,EMPLOYE) update(ADMIN,EMPLOYE) create(ADMIN,EMPLOYE)
+            fields:
+              - code
+              - noteCredit|list-NoteCredit
+              - remboursements|list-Remboursement
+              - statut|enum-StatutRetourProduit
+            associations:
+              - name: RetourProduitProduit
+                with: Produit
+                fields:
+                  - quantite|int
+                  - cout|float
+
+      - name: notecredit
+        entities:
+          - name: NoteCredit
+            authority: get(ADMIN,EMPLOYE) delete(ADMIN,EMPLOYE) update(ADMIN,EMPLOYE) create(ADMIN,EMPLOYE)
+            fields:
+              - code
+              - dateExperation|date
+              - dateCreation|date
+              - dateExpedition|date
+              - totalUnites|int
+              - remiseGlobal|double
+              - sousTotal|double
+              - total|double
+              - statut|enum-StatutNoteCredit
+            associations:
+              - name: NoteCreditTaxe
+                with: Taxe
+              - name: NoteCreditProduit
+                with: Produit
+                fields:
+                  - total|double
+                  - quantite|int
+                  - disque|double
+
+      - name: remboursement
+        entities:
+          - name: Remboursement
+            authority: get(ADMIN,EMPLOYE) delete(ADMIN,EMPLOYE) update(ADMIN,EMPLOYE) create(ADMIN,EMPLOYE)
+            fields:
+              - code
+              - client|Client{ManyToOne}
+              - dateCreation|date
+              - dateExpedition|date
+              - totalUnites|int
+              - remiseGlobal|double
+              - sousTotal|double
+              - total|double
+              - statut|enum-StatutRemboursement
+            associations:
+              - name: RemboursementTaxe
+                with: Taxe
+              - name: RemboursementProduit
+                with: Produit
+                fields:
+                  - total|double
+                  - quantite|int
+                  - disque|double
+
+  - name: Inventaire
+    entities:
+      - name: NiveauStock
+        authority: get(ADMIN,EMPLOYE) delete(ADMIN,EMPLOYE) update(ADMIN,EMPLOYE) create(ADMIN,EMPLOYE)
+        fields:
+          - nom
+          - sku
+          - disponible
+    packages:
+      - name: boncommande
+        entities:
+          - name: BonCommande
+            authority: get(ADMIN,EMPLOYE) delete(ADMIN,EMPLOYE) update(ADMIN,EMPLOYE) create(ADMIN,EMPLOYE)
+            fields:
+              - code
+              - dateCreation|date
+              - dateExpedition|date
+              - rabais|float
+              - typeRabais|enum-TypeRabais
+              - remiseGlobal|double
+              - totalUnites|int
+              - sousTotal|double
+              - total|double
+              - statut|enum-StatutBonCommande
+              - livraison|Livraison
+            associations:
+              - name: BonCommandeTaxe
+                with: Taxe
+              - name: BonCommandeTaxeExpedition
+                with: Taxe
+              - name: BonCommandeProduit
+                with: Produit
+                fields:
+                  - total|double
+                  - quantite|int
+                  - disque|double
+      - name: livraison
+        entities:
+          - name: Livraison
+            authority: get(ADMIN,EMPLOYE) delete(ADMIN,EMPLOYE) update(ADMIN,EMPLOYE) create(ADMIN,EMPLOYE)
+            fields:
+              - code
+              - dateCreation|date
+              - dateExpedition|date
+              - remiseGlobal|double
+              - totalUnites|int
+              - sousTotal|double
+              - total|double
+              - statut|enum-StatutLivraison
+            associations:
+              - name: LivraisonTaxeExpedition
+                with: Taxe
+              - name: LivraisonProduit
+                with: Produit
+                fields:
+                  - total|double
+                  - quantite|int
+                  - disque|double
+
+  - name: Parametres
+    entities:
+      - name: Alerte
+        authority: get(ADMIN,EMPLOYE) delete(ADMIN,EMPLOYE) update(ADMIN,EMPLOYE) create(ADMIN,EMPLOYE)
+        fields:
+          - nom
+          - statut|enum-StatutAlerte
+          - actif|bool
+        associations:
+          - name: destinataireEmploye
+            with: Employe
+      - name: Entreprise
+        authority: get(ADMIN,EMPLOYE) delete(ADMIN,EMPLOYE) update(ADMIN,EMPLOYE) create(ADMIN,EMPLOYE)
+        fields:
+          - nom
+          - email
+          - telephone
+          - siteweb
+          - logo
+          - address|Address
+          - employes|list-Employe
+          - produits|list-Produit
+          - clients|list-Client
+          - fournisseurs|list-Fournisseur
+          - paiement|list-Paiement
+          - commandeExpedition|list-CommandeExpedition
+          - livraison|list-Livraison
+          - bonCommande|list-BonCommande
+          - niveauStock|list-NiveauStock
+          - remboursement|list-Remboursement
+          - noteCredit|list-NoteCredit
+          - retourProduit|list-RetourProduit
+          - facture|list-Facture
+          - commande|list-Commande
+          - estimation|list-Estimation
+      - name: Devis
+        authority: get(ADMIN,EMPLOYE) delete(ADMIN,EMPLOYE) update(ADMIN,EMPLOYE) create(ADMIN,EMPLOYE)
+        fields:
+          - clients|list-Client
+          - estimations|list-Estimation
+          - commandes|list-commande
+          - factures|list-Facture
+          - notesCredit|list-NoteCredit
+          - remboursements|list-Remboursement
+          - bonCommandes|list-BonCommande
+          - nouvelleDevise|NouvelleDevise{ManyToOne}
+          - tauxDeChange|double
+          - defaut|bool
+      - name: NouvelleDevise
+        authority: get(ADMIN,EMPLOYE) delete(ADMIN,EMPLOYE) update(ADMIN,EMPLOYE) create(ADMIN,EMPLOYE)
+        fields:
+          - labelle
+      - name: MethodePaiement
+        authority: get(ADMIN,EMPLOYE) delete(ADMIN,EMPLOYE) update(ADMIN,EMPLOYE) create(ADMIN,EMPLOYE)
+        fields:
+          - nom
+          - disponiblePos|bool
+          - actif|bool
+      - name: NiveauPrix
+        authority: get(ADMIN,EMPLOYE) delete(ADMIN,EMPLOYE) update(ADMIN,EMPLOYE) create(ADMIN,EMPLOYE)
+        fields:
+          - nom
+          - type|enum-StatutNiveauPrix
+          - actif|bool
+          - clients|list-Client
+          - fournisseurs|list-Fournisseur
+          - estimations|list-Estimation
+          - commandes|list-Commande
+          - factures|list-Facture
+          - notesCredit|list-NoteCredit
+          - remboursements|list-Remboursement
+          - bonCommandes|list-BonCommande
+      - name: Taxe
+        authority: get(ADMIN,EMPLOYE) delete(ADMIN,EMPLOYE) update(ADMIN,EMPLOYE) create(ADMIN,EMPLOYE)
+        fields:
+          - nom
+          - tauxImposition|double
+          - actif|bool
+
+  - name: address
+    entities:
+      - name: Address
+        authority: get(ADMIN,EMPLOYE) delete(ADMIN,EMPLOYE) update(ADMIN,EMPLOYE) create(ADMIN,EMPLOYE)
+        fields:
+          - address1
+          - address2
+          - postalCode
+          - city
+      - name: Country
+        authority: get(ADMIN,EMPLOYE) delete(ADMIN,EMPLOYE) update(ADMIN,EMPLOYE) create(ADMIN,EMPLOYE)
+        fields:
+          - name
+          - addresses|list-Address
+
+enums:
+  - name: Langue
+    constants:
+      - Francais
+      - Anglais
+  - name: TypeRabais
+    constants:
+      - Pourcentage
+      - Montant
+  - name: StatutEstimation
+    constants:
+      - Regete
+      - AccepteTransforme=Accepte et Transforme
+      - EnAttente=En attente
+  - name: StatutCommande
+    constants:
+      - Regete
+      - AccepteTransforme=Accepte et Transforme
+      - EnAttente=En attente
+  - name: StatutCommandeExpedition
+    constants:
+      - EnAttente=En attente
+      - EffectuerEnvoi=Effectuer l'envoi
+      - EnPreparation=En preparation
+      - PretPourExpedition=Pret pour expedition
+      - Expedie
+      - Livre
+  - name: StatutFacture
+    constants:
+      - Paye
+      - NonPaye=Non paye
+      - Partiel
+  - name: StatutNoteCredit
+    constants:
+      - Credite
+  - name: StatutRetourProduit
+    constants:
+      - Livre
+      - EnAttente=En attente
+  - name: StatutRemboursement
+    constants:
+      - Rembourse
+  - name: StatutBonCommande
+    constants:
+      - Actif
+  - name: StatutLivraison
+    constants:
+      - Livre
+  - name: StatutAlerte
+    constants:
+      - SousLePointCeCommande=Sous le point de commande
+      - EnRuptureDeStock=En rupture de stock
+  - name: StatutNiveauPrix
+    constants:
+      - Vente
+      - Achat
+

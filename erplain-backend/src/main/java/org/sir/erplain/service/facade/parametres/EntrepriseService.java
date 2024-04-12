@@ -1,0 +1,34 @@
+package org.sir.erplain.service.facade.parametres;
+import org.sir.erplain.bean.core.parametres.Entreprise;
+import org.sir.erplain.bean.core.ventes.Paiement;
+import org.sir.erplain.bean.core.inventaire.NiveauStock;
+import org.sir.erplain.bean.core.address.Address;
+import org.sir.erplain.bean.core.ventes.retourproduit.RetourProduit;
+import org.sir.erplain.bean.core.ventes.estimation.Estimation;
+import org.sir.erplain.bean.core.ventes.commande.Commande;
+import org.sir.erplain.bean.core.inventaire.livraison.Livraison;
+import org.sir.erplain.bean.core.produit.Produit;
+import org.sir.erplain.bean.core.contacts.Fournisseur;
+import org.sir.erplain.bean.core.ventes.remboursement.Remboursement;
+import org.sir.erplain.bean.core.ventes.CommandeExpedition;
+import org.sir.erplain.bean.core.contacts.user.Employe;
+import org.sir.erplain.bean.core.contacts.Client;
+import org.sir.erplain.bean.core.inventaire.boncommande.BonCommande;
+import org.sir.erplain.bean.core.ventes.notecredit.NoteCredit;
+import org.sir.erplain.bean.core.ventes.facture.Facture;
+import java.util.List;
+public interface EntrepriseService {
+Entreprise findById(Long id);
+List<Entreprise> findAllOptimized();
+List<Entreprise> findAll();
+Entreprise create(Entreprise item);
+List<Entreprise> create(List<Entreprise> item);
+Entreprise update(Entreprise item);
+List<Entreprise> update(List<Entreprise> item);
+void deleteById(Long id);
+void delete(Entreprise item);
+void delete(List<Entreprise> items);
+void deleteByIdIn(List<Long> ids);
+int deleteByAddressId(Long id);
+Entreprise findByAddressId(Long id);
+}
