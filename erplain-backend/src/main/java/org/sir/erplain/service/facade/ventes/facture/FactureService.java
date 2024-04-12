@@ -1,0 +1,35 @@
+package org.sir.erplain.service.facade.ventes.facture;
+import org.sir.erplain.bean.core.ventes.facture.Facture;
+import org.sir.erplain.bean.core.parametres.Entreprise;
+import org.sir.erplain.bean.core.parametres.NiveauPrix;
+import org.sir.erplain.bean.core.ventes.Paiement;
+import org.sir.erplain.bean.core.ventes.facture.FactureTaxe;
+import org.sir.erplain.bean.core.parametres.Devis;
+import org.sir.erplain.bean.core.ventes.retourproduit.RetourProduit;
+import org.sir.erplain.bean.core.ventes.facture.FactureTaxeExpedition;
+import org.sir.erplain.bean.core.ventes.facture.FactureProduit;
+import org.sir.erplain.bean.core.contacts.Client;
+import java.util.List;
+public interface FactureService {
+Facture findById(Long id);
+List<Facture> findAllOptimized();
+List<Facture> findAll();
+Facture create(Facture item);
+List<Facture> create(List<Facture> item);
+Facture update(Facture item);
+List<Facture> update(List<Facture> item);
+void deleteById(Long id);
+void delete(Facture item);
+void delete(List<Facture> items);
+void deleteByIdIn(List<Long> ids);
+int deleteByPaiementId(Long id);
+Facture findByPaiementId(Long id);
+int deleteByClientId(Long id);
+List<Facture> findByClientId(Long id);
+int deleteByEntrepriseId(Long id);
+List<Facture> findByEntrepriseId(Long id);
+int deleteByDevisId(Long id);
+List<Facture> findByDevisId(Long id);
+int deleteByNiveauPrixId(Long id);
+List<Facture> findByNiveauPrixId(Long id);
+}

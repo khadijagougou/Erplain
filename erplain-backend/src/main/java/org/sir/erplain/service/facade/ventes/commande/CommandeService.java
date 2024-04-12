@@ -1,0 +1,35 @@
+package org.sir.erplain.service.facade.ventes.commande;
+import org.sir.erplain.bean.core.ventes.commande.Commande;
+import org.sir.erplain.bean.core.parametres.Entreprise;
+import org.sir.erplain.bean.core.parametres.NiveauPrix;
+import org.sir.erplain.bean.core.parametres.Devis;
+import org.sir.erplain.bean.core.ventes.CommandeExpedition;
+import org.sir.erplain.bean.core.ventes.commande.CommandeTaxeExpedition;
+import org.sir.erplain.bean.core.ventes.commande.CommandeProduit;
+import org.sir.erplain.bean.core.contacts.Client;
+import org.sir.erplain.bean.core.ventes.facture.Facture;
+import org.sir.erplain.bean.core.ventes.commande.CommandeTaxe;
+import java.util.List;
+public interface CommandeService {
+Commande findById(Long id);
+List<Commande> findAllOptimized();
+List<Commande> findAll();
+Commande create(Commande item);
+List<Commande> create(List<Commande> item);
+Commande update(Commande item);
+List<Commande> update(List<Commande> item);
+void deleteById(Long id);
+void delete(Commande item);
+void delete(List<Commande> items);
+void deleteByIdIn(List<Long> ids);
+int deleteByFactureId(Long id);
+Commande findByFactureId(Long id);
+int deleteByClientId(Long id);
+List<Commande> findByClientId(Long id);
+int deleteByEntrepriseId(Long id);
+List<Commande> findByEntrepriseId(Long id);
+int deleteByDevisId(Long id);
+List<Commande> findByDevisId(Long id);
+int deleteByNiveauPrixId(Long id);
+List<Commande> findByNiveauPrixId(Long id);
+}

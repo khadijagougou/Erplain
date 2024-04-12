@@ -1,0 +1,33 @@
+package org.sir.erplain.service.facade.ventes.notecredit;
+import org.sir.erplain.bean.core.ventes.notecredit.NoteCredit;
+import org.sir.erplain.bean.core.ventes.notecredit.NoteCreditProduit;
+import org.sir.erplain.bean.core.parametres.Entreprise;
+import org.sir.erplain.bean.core.parametres.NiveauPrix;
+import org.sir.erplain.bean.core.parametres.Devis;
+import org.sir.erplain.bean.core.ventes.retourproduit.RetourProduit;
+import org.sir.erplain.bean.core.contacts.Client;
+import org.sir.erplain.bean.core.ventes.notecredit.NoteCreditTaxe;
+import java.util.List;
+public interface NoteCreditService {
+NoteCredit findById(Long id);
+List<NoteCredit> findAllOptimized();
+List<NoteCredit> findAll();
+NoteCredit create(NoteCredit item);
+List<NoteCredit> create(List<NoteCredit> item);
+NoteCredit update(NoteCredit item);
+List<NoteCredit> update(List<NoteCredit> item);
+void deleteById(Long id);
+void delete(NoteCredit item);
+void delete(List<NoteCredit> items);
+void deleteByIdIn(List<Long> ids);
+int deleteByClientId(Long id);
+List<NoteCredit> findByClientId(Long id);
+int deleteByRetourProduitId(Long id);
+List<NoteCredit> findByRetourProduitId(Long id);
+int deleteByEntrepriseId(Long id);
+List<NoteCredit> findByEntrepriseId(Long id);
+int deleteByDevisId(Long id);
+List<NoteCredit> findByDevisId(Long id);
+int deleteByNiveauPrixId(Long id);
+List<NoteCredit> findByNiveauPrixId(Long id);
+}
